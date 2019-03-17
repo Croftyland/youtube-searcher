@@ -1,51 +1,44 @@
-import _ from 'lodash';
+import React from 'react';
+import Search from './components/Search';
+import youtube from './api/youtube';
+import List from './components/List';
+import Details from './components/Details';
 
-import React, { Component } from 'react';
-import YTSearch from 'youtube-api-search';
-
-import SearchBar from './components/Search';
-import VideoList from './components/List';
-import VideoDetail from './components/Details';
-const API_KEY = 'AIzaSyCT5YNj0WpEUrt_4K8b3GZ6NoBZTOImXMA';
-
-//for exmaple
-
-class App extends Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      videos: [],
-      selectedVideo: null
-    };
-
-    this.videoSearch('react js');
+class App extends React.Component {
+  state = {
+    videos: [],
+    selectedVideo: null
   }
-
-  videoSearch(term) {
-    YTSearch({ key: API_KEY, term: term }, videos => {
-      this.setState({
-        videos: videos,
-        selectedVideo: videos[0]
-      }); //Same as this.setState({ videos : videos })
-    });
+  handleSubmit = async (termFromSearchBar) => {
+    const response = await youtube.get('/search', {
+      params: {
+        q: termFromSearchBar
+      }
+    })
+    this.setState({
+      videos: response.data.items
+    })
+  };
+  onVideoSelect = (video) => {
+    this.setState({selectedVideo: video})
   }
 
   render() {
-    const videoSearch = _.debounce(term => {
-      this.videoSearch(term);
-    }, 300);
-
     return (
-        <div>
-          <h5>Youtube Search:</h5><SearchBar onSearchTermChange={videoSearch} />
-          <VideoDetail video={this.state.selectedVideo} />
-          <VideoList
-              onVideoSelect={selectedVideo => this.setState({ selectedVideo })}
-              videos={this.state.videos}
-          />
+        <div className='ui container' style={{marginTop: '1em'}}>
+          <Search handleFormSubmit={this.handleSubmit}/>
+          <div className='ui grid'>
+            <div className="ui row">
+              <div className="eleven wide column">
+                <Details video={this.state.selectedVideo}/>
+              </div>
+              <div className="five wide column">
+                <List onVideoSelect={this.onVideoSelect} videos={this.state.videos}/>
+              </div>
+            </div>
+          </div>
         </div>
-    );
+    )
   }
 }
 
