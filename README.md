@@ -22,3 +22,14 @@ The UI include the following flows:
     * For the search use [this Search API](https://developers.google.com/youtube/v3/docs/search) 
     * For the player use [this iFrame SDK](https://developers.google.com/youtube/iframe_api_reference)
 * Please try express yourself as much you can, try to use your daily basis coding so we can see your level and knowledge
+
+
+### Lauching project
+
+1. Clone this repo
+2. `cd spa-webinar`
+3. `npm install`
+4. Rename `etc/config.js.sample` to `etc/config.js`
+4. `npm run server`
+5. `npm run webpack-devserver`
+6. Open http://localhost:8090 in browser
